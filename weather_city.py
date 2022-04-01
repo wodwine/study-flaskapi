@@ -1,4 +1,4 @@
-from flask_restful import Resource
+from flask_restful import Resource, abort
 
 my_city = {
     "bkk": {"weather": "Good", "people": "8M"},
@@ -7,11 +7,18 @@ my_city = {
 }
 
 
+def validate_request(city_name):
+    if city_name not in my_city:
+        abort(404, message=f"{city_name} not found")
+    return True
+
+
 class WeatherCity(Resource):
     @staticmethod
-    def get(name):
-        return {"response": {"province":name,"data":my_city[name]}}
+    def get(city_name):
+        if validate_request(city_name):
+            return {"response": {"city": city_name, "data": my_city[city_name]}}
 
     @staticmethod
-    def post(name):
-        return {"data": f"Data Weather Post of {name}"}
+    def post(city_name):
+        return {"response": f"Data Weather Post of {city_name}"}
