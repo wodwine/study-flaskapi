@@ -55,16 +55,12 @@ resource_field = {
 class WeatherCity(Resource):
 
     @staticmethod
-    def validate_request(city_id):
-        if city_id not in my_city:
-            abort(404, message=f"{city_id} not found")
-        return True
-
-    @staticmethod
     @marshal_with(resource_field)
     def get(city_id):
-        if WeatherCity.validate_request(city_id):
-            return
+        result = CityModel.query.filter_by(id=city_id).first()
+        if not result:
+            abort(404, message=f"{city_id} not found")
+        return result
 
     @staticmethod
     @marshal_with(resource_field)
