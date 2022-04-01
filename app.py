@@ -65,6 +65,9 @@ class WeatherCity(Resource):
     @staticmethod
     @marshal_with(resource_field)
     def post(city_id):
+        result = CityModel.query.filter_by(id=city_id).first()
+        if result:
+            abort(404, message=f"{city_id} already in the database")
         args = city_add_args.parse_args()
         city = CityModel(id=city_id, name=args["name"], temp=args["temp"],
                          weather=args["weather"], people=args["people"])
